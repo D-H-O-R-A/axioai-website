@@ -85,8 +85,8 @@
             <h1>Unleash the Potential of AI</h1>
             <h1>with AxioAi</h1>
             <p>Artificial intelligence in the palm of your hand</p>
-            <a href="http://docs.axioai.io/">Whitepaper</a>
-            <a style="display: none;" href="./app.html#draw">AxioDRAW</a>
+            <a x href="http://docs.axioai.io/">Whitepaper</a>
+            <a y style="display: none;" href="./app.html#draw">AxioDRAW</a>
         </center>
         
     </div>
@@ -298,6 +298,8 @@ $(window).on("load", ()=>{
         startRotate+=10;
     },100)
 
+
+    /*
     setInterval(()=>{
         var scrollY = window.scrollY
         // obter o scrollbar
@@ -320,7 +322,7 @@ $(window).on("load", ()=>{
         if(scrollY>2000){
             nextStepVideo=6;
         }
-    },200)
+    },200)*/
 })
 
 function nextStart(){
@@ -349,7 +351,85 @@ function scrollToNextSection() {
       top: nextSectionY,
       behavior: "smooth",
     });
-  }
+}
+
+$(document).ready(function() {
+    var currentSection = -1;
+
+    function updateContent(scrollY) {
+        var newSection = Math.floor(scrollY / 400);
+
+        if (newSection !== currentSection) {
+            $("#root center").fadeOut(300, function() {
+                switch (newSection) {
+                    case 0:
+                        updateText("Transform Your Digital", "Experience with AxioAi", "Reimagine what’s possible with AxioAi’s suite of AI tools. Whether it’s through generating dynamic visual content or offering personalized user engagements, our technology is designed to enhance your digital presence and captivate your audience.", "./app.html#gpt", "AxioGPT");
+                        $("#root center p").css("text-align","right")
+                        $("#root center p").css("text-align","right")
+            $("#root center a").css("display","flex")
+            $("#root center").css({
+                'flex': '1',
+                'display': 'flex',
+                'flex-direction': 'column',
+                'flex-wrap': 'nowrap',
+                'align-content': 'flex-end',
+                'justify-content': 'center',
+                'align-items': 'flex-end',
+                'color': 'white'
+            });
+                        break;
+                    case 1:
+                        updateText("Revolutionize Your Operations", "With Cutting-Edge AI", "Reimagine what’s possible with AxioAi’s suite of AI tools. Whether it’s through generating dynamic visual content or offering personalized user engagements, our technology is designed to enhance your digital presence and captivate your audience.", "https://t.me/AxioAI_bot", "Telegram Bot Ai");
+            $('#root center a[y]').css("display","none")
+            $("#root center h1").css({
+                'width':'100%',
+                'text-align': 'left'
+            })
+            $("#root center").css({
+                'flex': '1',
+                'display': 'flex',
+                'flex-direction': 'column',
+                'flex-wrap': 'nowrap',
+                'align-content': 'flex-end',
+                'justify-content': 'center',
+                'align-items': 'flex-end',
+                'color': 'white'
+            });
+                        break;
+                    case 2:
+                        updateText("Enhance Your Analytics", "Through AI Insights", "Gain deep insights with our AI analytics.", "./app.html#analytics", "View Analytics Suite");
+                        $('#root center a[y]').css("display","none")
+
+                        break;
+                    case 3:
+                        updateText("Optimize Interactions", "With Smart AI", "Use our AI to improve user interactions.", "./app.html#interactions", "Interactive AI");
+                        $('#root center a[y]').css("display","none")
+
+                        break;
+                    default:
+                        updateText("Transform Your Digital", "Experience with AxioAi", "Reimagine what’s possible with AxioAi’s suite of AI tools.", "./app.html#gpt", "Explore AI");
+                        $('#root center a[y]').css("display","none")
+
+                        break;
+                }
+                $("#root center").fadeIn(300);
+            });
+            currentSection = newSection;
+        }
+    }
+
+    function updateText(h1, h2, p, href, linkText) {
+        $("#root center h1:nth-child(1)").text(h1);
+        $("#root center h1:nth-child(2)").text(h2);
+        $("#root center p").text(p);
+        $('#root center a[x]').text(linkText).attr("href", href);
+    }
+
+    $(window).scroll(function() {
+        var scrollY = $(this).scrollTop();
+        updateContent(scrollY);
+    });
+});
     </script>
 </body>
 </html>
