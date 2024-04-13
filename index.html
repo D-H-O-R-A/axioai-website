@@ -98,16 +98,16 @@
 
     <div id="audios">
         <audio id="tranitionaudio">
-            <source src="./audio/transition.mp3" type="audio/mp3">
+            <source src="./transition.mp3" type="audio/mp3">
         </audio>
         <audio id="backgroundaudio1" loop>
-            <source src="./audio/background-loop-3.mp3" type="audio/mp3">
+            <source src="./background-loop-3.mp3" type="audio/mp3">
         </audio>
         <audio id="backgroundaudio2" loop>
-            <source src="./audio/background-loop-2.mp3" type="audio/mp3">
+            <source src="./background-loop-2.mp3" type="audio/mp3">
         </audio>
         <audio id="backgroundaudio3" loop>
-            <source src="./audio/background-loop-1.mp3" type="audio/mp3">
+            <source src="./background-loop-1.mp3" type="audio/mp3">
         </audio>
     </div>
 
@@ -341,6 +341,7 @@ $(window).on("load", ()=>{
 })
 
 function nextStart(){
+    iniciarAudioContext()
     console.log("nextClicked");
     var h=1;
     var d = setInterval(()=>{
@@ -379,6 +380,27 @@ function transitionAUdio(){
     transitionAudio.pause();
     transitionAudio.currentTime = 0;
     transitionAudio.play();
+}
+
+
+var audioContext;
+
+function iniciarAudioContext() {
+  // Verificar si el contexto de audio ya está creado
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  // Intentar reanudar el contexto de audio después de una interacción del usuario
+  if (audioContext.state === 'suspended') {
+    audioContext.resume().then(function() {
+      console.log('AudioContext reanudado con éxito.');
+      // Realizar cualquier otra operación relacionada con el contexto de audio aquí
+    }).catch(function(error) {
+      console.error('Error al reanudar AudioContext:', error);
+      // Manejar el error de reanudación del contexto de audio aquí
+    });
+  }
 }
 
 $(document).ready(function() {
