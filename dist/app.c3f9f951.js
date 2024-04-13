@@ -51390,7 +51390,7 @@ var Sketch = exports.default = /*#__PURE__*/function () {
     this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.001, 1000);
 
     // Configura a posição da câmera para focalizar no objeto 3D humano
-    this.camera.position.set(-2, 0, 0);
+    this.camera.position.set(-0.001, 0.9, 0.03);
     this.camera.lookAt(0, 0, 0);
     this.controls = new _OrbitControls.OrbitControls(this.camera, this.renderer.domElement);
     this.render.toneMapping = THREE.ACESFilmicToneMapping;
@@ -51403,7 +51403,6 @@ var Sketch = exports.default = /*#__PURE__*/function () {
     this.resize();
     this.setupResize();
     this.render();
-    this.animateCameraAroundHuman();
   }
   return _createClass(Sketch, [{
     key: "initPost",
@@ -51505,9 +51504,77 @@ var Sketch = exports.default = /*#__PURE__*/function () {
           });
           _this.human.scale.set(0.1, 0.1, 0.1);
           _this.human.geometry.center();
-          console.log(_this.camera.rotation);
-          // Atualiza o alvo da câmera para o centro do objeto 3D humano
-          _this.camera.lookAt(center);
+          // Adiciona evento de mudança de posição da câmera
+
+          setInterval(function () {
+            var mode = sessionStorage.getItem('animationT');
+            switch (mode) {
+              case '0':
+                _gsap.default.to(_this.camera.position, {
+                  x: 0,
+                  y: 1,
+                  //(-0.001, 0.9, 0.03)
+                  z: 0.5,
+                  duration: 2,
+                  // Tempo de duração da animação
+                  onUpdate: function onUpdate() {
+                    _this.camera.lookAt(0, 0.8, 0); // Mantém a câmera olhando para o objeto
+                  }
+                });
+                break;
+              case '1':
+                _gsap.default.to(_this.camera.position, {
+                  x: 0,
+                  y: 0.5,
+                  //(-0.001, 0.9, 0.03)
+                  z: 0.2,
+                  duration: 2,
+                  // Tempo de duração da animação
+                  onUpdate: function onUpdate() {
+                    _this.camera.lookAt(0, 0.5, -0.5); // Mantém a câmera olhando para o objeto
+                  }
+                });
+                break;
+              case '2':
+                _gsap.default.to(_this.camera.position, {
+                  x: 0,
+                  y: 0,
+                  //(-0.001, 0.9, 0.03)
+                  z: 0.2,
+                  duration: 2,
+                  // Tempo de duração da animação
+                  onUpdate: function onUpdate() {
+                    _this.camera.lookAt(-1, -1, -2); // Mantém a câmera olhando para o objeto
+                  }
+                });
+                break;
+              case '3':
+                _gsap.default.to(_this.camera.position, {
+                  x: 0,
+                  y: 0,
+                  //(-0.001, 0.9, 0.03)
+                  z: 0.4,
+                  duration: 2,
+                  // Tempo de duração da animação
+                  onUpdate: function onUpdate() {
+                    _this.camera.lookAt(-1, -2, 0); // Mantém a câmera olhando para o objeto
+                  }
+                });
+                break;
+              case '4':
+                _gsap.default.to(_this.camera.position, {
+                  x: 0,
+                  y: 1,
+                  //(-0.001, 0.9, 0.03)
+                  z: 2,
+                  duration: 2,
+                  // Tempo de duração da animação
+                  onUpdate: function onUpdate() {
+                    _this.camera.lookAt(0, 0, 0); // Mantém a câmera olhando para o objeto
+                  }
+                });
+            }
+          }, 500);
         }, undefined, function (error) {
           console.error(error);
         });
@@ -51526,80 +51593,6 @@ var Sketch = exports.default = /*#__PURE__*/function () {
         }
         //this.human.rotation.y += 0.005;
       }
-    }
-  }, {
-    key: "animateCameraAroundHuman",
-    value: function animateCameraAroundHuman() {
-      var _this2 = this;
-      if (!this.human) return;
-
-      // Calcula a posição do centro do humano
-      var boundingBox = new THREE.Box3().setFromObject(this.human);
-      var center = boundingBox.getCenter(new THREE.Vector3());
-
-      // Define o ponto inicial da câmera
-      var initialPosition = new THREE.Vector3(center.x, center.y, center.z + 0.5);
-
-      // Define a duração da animação
-      var duration = 5;
-
-      // Configura a animação de aproximação do zoom ao corpo do modelo
-      var zoomIn = function zoomIn() {
-        var zoomDuration = 2;
-        var targetPosition = new THREE.Vector3(center.x, center.y, center.z - 0.2);
-        TweenMax.to(_this2.camera.position, zoomDuration, {
-          x: targetPosition.x,
-          y: targetPosition.y,
-          z: targetPosition.z,
-          onUpdate: function onUpdate() {
-            _this2.controls.update();
-          },
-          onComplete: function onComplete() {
-            // Quando a aproximação do zoom estiver concluída, inicia a rotação da câmera ao redor do modelo
-            rotateAroundHuman();
-          },
-          ease: Power0.easeNone
-        });
-      };
-
-      // Configura a animação de rotação da câmera ao redor do modelo
-      var rotateAroundHuman = function rotateAroundHuman() {
-        var rotationDuration = 3;
-        var targetPosition = new THREE.Vector3(center.x + 0.5, center.y, center.z + 0.5);
-        TweenMax.to(_this2.camera.position, rotationDuration, {
-          x: targetPosition.x,
-          y: targetPosition.y,
-          z: targetPosition.z,
-          onUpdate: function onUpdate() {
-            _this2.controls.update();
-          },
-          onComplete: function onComplete() {
-            // Quando a rotação estiver concluída, inicia a animação de afastamento do zoom
-            zoomOut();
-          },
-          ease: Power0.easeNone
-        });
-      };
-
-      // Configura a animação de afastamento do zoom após a rotação
-      var zoomOut = function zoomOut() {
-        var zoomDuration = 2;
-        TweenMax.to(_this2.camera.position, zoomDuration, {
-          x: initialPosition.x,
-          y: initialPosition.y,
-          z: initialPosition.z,
-          onUpdate: function onUpdate() {
-            _this2.controls.update();
-          },
-          onComplete: function onComplete() {
-            // Quando o afastamento do zoom estiver concluído, pode-se fazer outras ações se necessário
-          },
-          ease: Power0.easeNone
-        });
-      };
-
-      // Inicia a animação de aproximação do zoom ao corpo do modelo
-      zoomIn();
     }
   }]);
 }();
@@ -51631,7 +51624,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53279" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54654" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

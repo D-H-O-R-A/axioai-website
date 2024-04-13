@@ -33,7 +33,7 @@ export default class Sketch {
     this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.001, 1000);
 
     // Configura a posição da câmera para focalizar no objeto 3D humano
-    this.camera.position.set(-2, 0, 0);
+    this.camera.position.set(-0.001, 0.9, 0.03);
     this.camera.lookAt(0, 0, 0);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -51,7 +51,6 @@ export default class Sketch {
     this.resize();
     this.setupResize();
     this.render();
-    this.animateCameraAroundHuman();
   }
 
   initPost() {
@@ -221,10 +220,69 @@ export default class Sketch {
   
         this.human.scale.set(0.1, 0.1, 0.1);
         this.human.geometry.center();
+        // Adiciona evento de mudança de posição da câmera
 
-        console.log(this.camera.rotation)
-        // Atualiza o alvo da câmera para o centro do objeto 3D humano
-        this.camera.lookAt(center);
+        setInterval(()=>{
+          const mode = sessionStorage.getItem('animationT');
+
+          switch(mode){
+            case '0':
+              gsap.to(this.camera.position, {
+                x: 0,
+                y: 1,//(-0.001, 0.9, 0.03)
+                z: 0.5,
+                duration: 2, // Tempo de duração da animação
+                onUpdate: () => {
+                  this.camera.lookAt(0, 0.8, 0); // Mantém a câmera olhando para o objeto
+                }
+              });
+            break;
+            case '1':
+              gsap.to(this.camera.position, {
+                x: 0,
+                y: 0.5,//(-0.001, 0.9, 0.03)
+                z: 0.2,
+                duration: 2, // Tempo de duração da animação
+                onUpdate: () => {
+                  this.camera.lookAt(0, 0.5, -0.5); // Mantém a câmera olhando para o objeto
+                }
+              });
+            break;
+            case '2':
+              gsap.to(this.camera.position, {
+                x: 0,
+                y: 0,//(-0.001, 0.9, 0.03)
+                z: 0.2,
+                duration: 2, // Tempo de duração da animação
+                onUpdate: () => {
+                  this.camera.lookAt(-1, -1, -2); // Mantém a câmera olhando para o objeto
+                }
+              });
+            break;
+            case '3':
+              gsap.to(this.camera.position, {
+                x: 0,
+                y: 0,//(-0.001, 0.9, 0.03)
+                z: 0.4,
+                duration: 2, // Tempo de duração da animação
+                onUpdate: () => {
+                  this.camera.lookAt(-1, -2, 0); // Mantém a câmera olhando para o objeto
+                }
+              });
+            break;
+            case '4':
+              gsap.to(this.camera.position, {
+                x: 0,
+                y: 1,//(-0.001, 0.9, 0.03)
+                z: 2,
+                duration: 2, // Tempo de duração da animação
+                onUpdate: () => {
+                  this.camera.lookAt(0, 0, 0); // Mantém a câmera olhando para o objeto
+                }
+              });
+          }
+        },500)
+
   
       }, undefined, (error) => {
         console.error(error);
@@ -247,106 +305,7 @@ export default class Sketch {
     }
   }
 
-      animateCameraAroundHuman() {
-        if (!this.human) return;
 
-        // Calcula a posição do centro do humano
-        const boundingBox = new THREE.Box3().setFromObject(this.human);
-        const center = boundingBox.getCenter(new THREE.Vector3());
-
-        // Define o ponto inicial da câmera
-        const initialPosition = new THREE.Vector3(center.x, center.y + 2, center.z + 0.5);
-
-        // Define a duração da animação
-        const duration = 5;
-
-        // Cria uma animação TweenMax para mover a câmera do ponto inicial para a posição final
-        TweenMax.to(this.camera.position, duration, {
-            x: initialPosition.x,
-            y: initialPosition.y,
-            z: initialPosition.z,
-            onUpdate: () => {
-                // Atualiza o controle de órbita
-                this.controls.update();
-            },
-            onComplete: () => {
-                // Callback para realizar outras ações após a animação ser concluída
-            },
-            ease: Power0.easeNone
-        });
-    }
-
-    animateCameraAroundHuman() {
-      if (!this.human) return;
-  
-      // Calcula a posição do centro do humano
-      const boundingBox = new THREE.Box3().setFromObject(this.human);
-      const center = boundingBox.getCenter(new THREE.Vector3());
-  
-      // Define o ponto inicial da câmera
-      const initialPosition = new THREE.Vector3(center.x, center.y, center.z + 0.5);
-  
-      // Define a duração da animação
-      const duration = 5;
-  
-      // Configura a animação de aproximação do zoom ao corpo do modelo
-      const zoomIn = () => {
-          const zoomDuration = 2;
-          const targetPosition = new THREE.Vector3(center.x, center.y, center.z - 0.2);
-          TweenMax.to(this.camera.position, zoomDuration, {
-              x: targetPosition.x,
-              y: targetPosition.y,
-              z: targetPosition.z,
-              onUpdate: () => {
-                  this.controls.update();
-              },
-              onComplete: () => {
-                  // Quando a aproximação do zoom estiver concluída, inicia a rotação da câmera ao redor do modelo
-                  rotateAroundHuman();
-              },
-              ease: Power0.easeNone
-          });
-      };
-  
-      // Configura a animação de rotação da câmera ao redor do modelo
-      const rotateAroundHuman = () => {
-          const rotationDuration = 3;
-          const targetPosition = new THREE.Vector3(center.x + 0.5, center.y, center.z + 0.5);
-          TweenMax.to(this.camera.position, rotationDuration, {
-              x: targetPosition.x,
-              y: targetPosition.y,
-              z: targetPosition.z,
-              onUpdate: () => {
-                  this.controls.update();
-              },
-              onComplete: () => {
-                  // Quando a rotação estiver concluída, inicia a animação de afastamento do zoom
-                  zoomOut();
-              },
-              ease: Power0.easeNone
-          });
-      };
-  
-      // Configura a animação de afastamento do zoom após a rotação
-      const zoomOut = () => {
-          const zoomDuration = 2;
-          TweenMax.to(this.camera.position, zoomDuration, {
-              x: initialPosition.x,
-              y: initialPosition.y,
-              z: initialPosition.z,
-              onUpdate: () => {
-                  this.controls.update();
-              },
-              onComplete: () => {
-                  // Quando o afastamento do zoom estiver concluído, pode-se fazer outras ações se necessário
-              },
-              ease: Power0.easeNone
-          });
-      };
-  
-      // Inicia a animação de aproximação do zoom ao corpo do modelo
-      zoomIn();
-  }
   
 }
 
