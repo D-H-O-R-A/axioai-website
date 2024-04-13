@@ -75,7 +75,7 @@ export default class Sketch {
     let that = this;
     this.settings = {
       exposure:2,
-      bloomStrength: 1.5,
+      bloomStrength: 0.8,
       bloomThreshold: 0.1,
       bloomRadius: 0.8
     }

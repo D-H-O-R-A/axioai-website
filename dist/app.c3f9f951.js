@@ -51424,7 +51424,7 @@ var Sketch = exports.default = /*#__PURE__*/function () {
       var that = this;
       this.settings = {
         exposure: 2,
-        bloomStrength: 1.5,
+        bloomStrength: 0.8,
         bloomThreshold: 0.1,
         bloomRadius: 0.8
       };
@@ -51624,7 +51624,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57125" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57406" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
