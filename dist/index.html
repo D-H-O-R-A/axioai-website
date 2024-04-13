@@ -96,6 +96,21 @@
 
 	<script src="/app.c3f9f951.js"></script>
 
+    <div id="audios">
+        <audio id="tranitionaudio">
+            <source src="/transition.3b13a5e0.mp3" type="audio/mp3">
+        </audio>
+        <audio id="backgroundaudio1" loop="">
+            <source src="/background-loop-3.f574ecb3.mp3" type="audio/mp3">
+        </audio>
+        <audio id="backgroundaudio2" loop="">
+            <source src="/background-loop-2.450834c8.mp3" type="audio/mp3">
+        </audio>
+        <audio id="backgroundaudio3" loop="">
+            <source src="/background-loop-1.1ec2824c.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
     <script defer="">$(window).on("load", function () {
   window.scrollTo(0, 0);
   $("html, body").scrollTop(0);
@@ -327,6 +342,12 @@ function nextStart() {
     h -= 0.3;
   }, 200);
   $(".scrollToUnder").css("display", "flex");
+  var bc1 = document.getElementById("backgroundaudio1");
+  var bc2 = document.getElementById("backgroundaudio2");
+  var bc3 = document.getElementById("backgroundaudio3");
+  bc1.play();
+  bc2.play();
+  bc3.play();
 }
 function scrollToNextSection() {
   // Obtém a posição de rolagem atual
@@ -341,6 +362,12 @@ function scrollToNextSection() {
     behavior: "smooth"
   });
 }
+function transitionAUdio() {
+  var transitionAudio = document.getElementById("tranitionaudio");
+  transitionAudio.pause();
+  transitionAudio.currentTime = 0;
+  transitionAudio.play();
+}
 $(document).ready(function () {
   sessionStorage.removeItem('animationT');
   var currentSection = -1;
@@ -349,6 +376,7 @@ $(document).ready(function () {
     if (newSection !== currentSection) {
       $("#root center").fadeOut(300, function () {
         setArmAn(newSection);
+        transitionAUdio();
         switch (newSection) {
           case 0:
             updateText("Transform Your Digital", "Experience with AxioAi", "Reimagine what’s possible with AxioAi’s suite of AI tools. Whether it’s through generating dynamic visual content or offering personalized user engagements, our technology is designed to enhance your digital presence and captivate your audience.", "./app.html#gpt", "AxioGPT");

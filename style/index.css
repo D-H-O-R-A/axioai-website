@@ -460,3 +460,15 @@ html, body{
         font-size: 20px;
     }
 }
+
+#audios{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+    z-index: -9999999999;
+}
